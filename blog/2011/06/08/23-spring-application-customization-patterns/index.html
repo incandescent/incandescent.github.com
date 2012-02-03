@@ -1,0 +1,290 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Spring Application Customization Patterns - Incandescent Software</title>
+  <meta name="author" content="Incandescent Team">
+
+  
+  <meta name="description" content="Having performed numerous customizations of third party or upstream/vendor applications based on the Spring framework, I&#8217;d like to share some &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://incandescent.github.com/blog/2011/06/08/23-spring-application-customization-patterns">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Incandescent Software" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Incandescent Software</a></h1>
+  
+    <h2>tales of web &amp; veterinary software development</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:incandescent.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Spring Application Customization Patterns</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-08T23:03:00-04:00" pubdate data-updated="true">Jun 8<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Having performed numerous customizations of third party or upstream/vendor applications based on the Spring framework, I&#8217;d like to share some patterns I&#8217;ve identified. These patterns form a hierarchy based on preferability - if it is not possible to implement one approach you may have to back off, and try the next best, repeating in stepwise fashion. I am going to list them from least preferable to most preferable in order to walk you through the rationale behind each approach.</p>
+
+
+<p>We will assume an application distributed in binary form, containing a Spring context with a service interface <strong>com.sample.ApplicationService</strong> and implementation <strong>com.sample.ApplicationServiceImpl</strong> defined as an <strong>&#8220;applicationService&#8221;</strong> bean which we want to override with some local customization.</p>
+
+
+<p><strong>Direct class override</strong></p>
+
+
+<p>The simplest and most direct approach is to simply create a new class named <strong>com.sample.ApplicationServiceImpl</strong> and arrange for it to appear in the classpath before the upstream implementation. If you have no other options (or are simply prototyping or debugging something) then this might work for you, but it cannot be considered much more than a hack.</p>
+
+
+<p>There are numerous problems with this approach. First, while it may initially be superficially possible to contrive a classloader chain which results in your implementation being picked up first, this is brittle and may lead to very confusing results when it breaks in the future. You will either be duplicating the service implementation by copying and pasting, or otherwise lying about the pedigree of this class. This will certainly make debugging harder, and will also convey an immediate maintenance overhead. Imagine upstream diverging from the base you forked - you will now have to continually reconcile any future changes to upstream (this may not phase users of decentralized version control systems but is certainly endless and error-prone tedium when working with central SCM like SVN). If you hoped to submit your customizations for inclusion upstream, then overriding the class directly may complicate acceptance. If behavior has changed, tests may fail. Or the change may be rejected because it is not suitable as a default for all users.</p>
+
+
+<p>A better approach would be to implement a separate class and submit this implementation as an <em>alternative</em> (with tests specific to this implementation of course).</p>
+
+
+<p><strong>Explicit context inclusion</strong></p>
+
+
+<p>In order to supply an alternate implementation, you will need to override the service bean defined in the application&#8217;s Spring context (let&#8217;s assume there <em>is</em> such a bean defined). Unless the application has provided some way for you to inject a context to override this bean you are still in the first situation: having to directly override a file (the Spring context this time) relying on classloader precedence. Let&#8217;s assume the application has implemented a specific provision for you to specify your own Spring context for inclusion. It may look like this:</p>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">String</span> <span class="n">customContext</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&quot;customContext&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">customContext</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClasspathApplicationContext</span><span class="o">(</span><span class="n">DEFAULT_CTX</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClasspathApplicationContext</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="n">DEFAULT_CONTEXT</span><span class="o">,</span> <span class="n">customContext</span> <span class="o">});</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p>In this situation you can construct a Spring context which redefines the application bean by name (&#8220;applicationService&#8221;) and supply the context via a system parameter:
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">-</span><span class="n">DcustomContext</span><span class="o">=</span><span class="n">MySpecialCustomization</span><span class="o">.</span><span class="na">xml</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>However this requires explicit, programmatic, support by the application.</p>
+<p><strong>Automatic context inclusion</strong></p>
+<p>A better approach for the application to implement is to take advantage of Spring&#8217;s resource syntax to import a <strong>wildcard</strong> resource expression. For example:</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;import</span> <span class="na">resource=</span><span class="s">&quot;classpath*:com/sample/*Customization.xml&quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>If placed in the application&#8217;s context, this expression will cause the import of any contexts matching the glob <strong>&#8220;com/sample/*Customization.xml&#8221;</strong> in any classloader without any <em>additional coordination between application and implementer.</em></p>
+<p>The <strong>&#8220;classpath*:&#8221; </strong>syntax tells Spring to look in <em>all classloaders</em>. See Spring&#8217;s documentation for a better understanding of classpath resource expressions:</p>
+
+<a href="http://static.springsource.org/spring/docs/2.5.x/reference/resources.html#resources-app-ctx-wildcards-in-resource-paths">http://static.springsource.org/spring/docs/2.5.x/reference/resources.html#resources-app-ctx-wildcards-in-resource-paths</a>
+
+<p>If using Maven, for example, simply adding an additional dependency containing the customization (e.g. &#8220;com/sample/MySpecialCustomization.xml&#8221;) to your project is sufficient to implement the override.</p>
+<p>One theoretical downside is that it may be expensive for Spring to iterate through classloaders looking for matching contexts. This is complete speculation on my part, and given the maintenance burden and complexity of the other solutions, it is probably worth a (startup) performance penalty.</p>
+<p><strong>Missing bean definition</strong></p>
+<p>The above approaches will not work (directly) if you encounter the following situation: You wish to override a class which is not defined as a bean. It is likely this class itself is used (eventually) by a service, which means you need to walk the caller hierarchy to find affected services, and then resume with the above approaches <em>on those services</em>. You will need to override the services, providing implementations (ideally shallow subclasses) which override <em>the minimal number of methods</em>necessary to replace invocations of the old class with your new class.</p>
+<p>For bonus points, make the aforementioned class <em>injectable</em>as a Spring bean, and submit this enhancement upstream. This will allow you to migrate your customization to a simple bean and throw away your unnecessary wrapper classes/beans.</p>
+<p><strong>AOP magic</strong></p>
+<p>With the approaches discussed so far, you ultimately still have to replace an entire service. If the application has been modularized sufficiently then this may not be a concern. However, it may be the case that replacing an entire service is heavy-handed, or that the functionality you need implemented is not necessarily best done by replacing a service implementation.</p>
+<p>In these situations there is another trick up our sleeve. We can wrap the <strong><em>existing</em></strong> implementation bean with a Spring AOP (Aspect Oriented Programming) aspect. For example we can surgically override a single method on a large interface. Or we can apply common logic to all methods (e.g. caching). We can secretly mutate method arguments and return values. In some situations this is much more convenient than overriding a service (imaging having to override a large service simply to change arguments and delegate to the wrapper service&#8230;).</p>
+<p>While this is the most loosely coupled approach, there are several downsides. First, AOP can be hard to understand and maintain. Secondly, AOP can complicate debugging as errors can now occur &#8220;between&#8221; known call frames, and behavior introduced dynamically via AOP will not be obvious to the external observer. Lastly, AOP can only be applied to services defined as beans.</p>
+<p>For details on Spring AOP see:</p>
+
+<a href="http://static.springsource.org/spring/docs/2.5.x/reference/aop.html">http://static.springsource.org/spring/docs/2.5.x/reference/aop.html</a>
+<p><strong>Conclusion</strong></p>
+<p>Well, despite the lack of code examples I hope that this post has been helpful. I may in the future construct a sample case that illustrates each of these approaches, and the amount of &#8220;maintenance&#8221; overhead they impose.</p>
+<p>To sum up, I&#8217;d like to conclude with:</p>
+<p>Direct class overriding: JUST DON&#8217;T DO IT</p>
+<p>Automatic context inclusion: PLEASE implement this provision if you are writing an application or service in Spring which you anticipate users having to customize</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Incandescent Team</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-08T23:03:00-04:00" pubdate data-updated="true">Jun 8<span>th</span>, 2011</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://incandescent.github.com/blog/2011/06/08/23-spring-application-customization-patterns/" data-via="" data-counturl="http://incandescent.github.com/blog/2011/06/08/23-spring-application-customization-patterns/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/04/26/some-news/" title="Previous Post: Some News">&laquo; Some News</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2011/06/08/23-spring-application-customization-patterns/">Spring Application Customization Patterns</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/26/some-news/">Some News</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/02/10/jquery-mobile-with-backbone-dot-js-and-phonegap/">jQuery Mobile with Backbone.js and PhoneGap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/01/04/using-the-linode-api-for-provisioning/">Using the Linode API for provisioning</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/12/04/whizpage-closed-beta-launched/">Whizpage - closed beta launched!</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Incandescent Team -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,11 +1,37 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
+        <loc>http://incandescent.github.com/blog/2010/12/04/whizpage-closed-beta-launched/</loc>
+        <lastmod>2012-02-03T00:10:55-05:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://incandescent.github.com/blog/2011/01/04/using-the-linode-api-for-provisioning/
+        </loc>
+        <lastmod>2012-02-03T00:21:29-05:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://incandescent.github.com/blog/2011/02/10/jquery-mobile-with-backbone-dot-js-and-phonegap/
+        </loc>
+        <lastmod>2012-02-03T01:05:02-05:00</lastmod>
+    </url>
+    <url>
+        <loc>http://incandescent.github.com/blog/2011/04/26/some-news/</loc>
+        <lastmod>2012-02-03T01:07:59-05:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://incandescent.github.com/blog/2011/06/08/23-spring-application-customization-patterns/
+        </loc>
+        <lastmod>2012-02-03T01:22:59-05:00</lastmod>
+    </url>
+    <url>
         <loc>http://incandescent.github.com/blog/archives/</loc>
-        <lastmod>2012-02-02T21:41:27-05:00</lastmod>
+        <lastmod>2012-02-03T01:22:59-05:00</lastmod>
     </url>
     <url>
         <loc>http://incandescent.github.com/</loc>
-        <lastmod>2012-02-02T21:41:27-05:00</lastmod>
+        <lastmod>2012-02-03T01:22:59-05:00</lastmod>
     </url>
 </urlset>

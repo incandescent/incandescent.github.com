@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: whizpage | Incandescent Software]]></title>
+  <link href="http://incandescent.github.com/blog/categories/whizpage/atom.xml" rel="self"/>
+  <link href="http://incandescent.github.com/"/>
+  <updated>2012-02-03T01:24:56-05:00</updated>
+  <id>http://incandescent.github.com/</id>
+  <author>
+    <name><![CDATA[Incandescent Team]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Whizpage - closed beta launched!]]></title>
+    <link href="http://incandescent.github.com/blog/2010/12/04/whizpage-closed-beta-launched/"/>
+    <updated>2010-12-04T13:05:00-05:00</updated>
+    <id>http://incandescent.github.com/blog/2010/12/04/whizpage-closed-beta-launched</id>
+    <content type="html"><![CDATA[<p>Small businesses have it tough. They do not have the advantages of economies of scale that larger companies do, but are at the same time more reliant on word of mouth and personal networking to market their business. When it comes to a web presence, small business owners are often stuck in the realm between purchasing a pricey custom-built web site, or going it alone with a Do It Yourself tool and spending their time navigating the intricacies of web development and social media instead of running their business.</p>
+
+<p>We think small business owners could use a no-hassle service which allows them to easily create a web presence integrated with popular social media outlets out of the box.</p>
+
+<p>So with that said, we've launched the closed beta of our new product, <strong><a href="http://whizpage.biz" title="WhizPage - the simple way for small businesses to create a web presence">Whizpage</a></strong>!</p>
+
+<iframe frameborder="0" height="225" src="http://player.vimeo.com/video/16628599" width="400"></iframe>
+
+
+<p>If you are a small business owner, feel free to sign up and try it out. We are launching early and building features based on user feedback. We'd love to hear from you!</p>
+]]></content>
+  </entry>
+  
+</feed>

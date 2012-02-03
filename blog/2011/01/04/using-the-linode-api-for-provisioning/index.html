@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Using the Linode API for provisioning - Incandescent Software</title>
+  <meta name="author" content="Incandescent Team">
+
+  
+  <meta name="description" content="Linode is a great VPS/Cloud provider and we use it to run a development/testing machine and a production MongoDB server. It also has an easy to use &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://incandescent.github.com/blog/2011/01/04/using-the-linode-api-for-provisioning">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Incandescent Software" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Incandescent Software</a></h1>
+  
+    <h2>tales of web &amp; veterinary software development</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:incandescent.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Using the Linode API for Provisioning</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-04T16:48:00-05:00" pubdate data-updated="true">Jan 4<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="http://www.linode.com" title="Linode.com" target="_blank">Linode</a> is a great VPS/Cloud provider and we use it to run a development/testing machine and a production MongoDB server. It also has an easy to use REST <a href="http://www.linode.com/api/" title="Linode API" target="_blank">API</a> which, unlike Amazon EC2, requires only an access key and no complicated X509 configuration. There is a nice Ruby library for this API on github: <a href="https://github.com/rick/linode">https://github.com/rick/linode</a></p>
+
+<p>We use Puppet to manage node configuration once a node is provisioned (and this is cloud-provider agnostic), however provisioning the node requires use of the particular cloud provider&#8217;s API and this is where the library above comes in. There are libraries like <a href="http://incubator.apache.org/libcloud/" title="libcloud" target="_blank">libcloud</a> that provide an abstraction layer that works with many cloud providers - using the Linode API directly made the most sense for us.</p>
+
+<p>The Ruby Linode library above exposes the Linode API directly, and it is fairly low level (no model of the node, config, etc.). Since (re)provisioning requires successive interactions with the same Linode instance, as well as a notion of a static configuration which can be applied to the node, it&#8217;s nice to have a higher level model of the virtual machine. We created a small library which wraps the Linode API and adds a couple of abstractions. You can find it here on GitHub:</p>
+
+<p><a href="https://github.com/incandescent/linode-utils">https://github.com/incandescent/linode-utils</a></p>
+
+<p>This linode-utils gem provides a simple model of a Linode Machine, as well as a small Linode configuration DSL.</p>
+
+<p>Machine operations:</p>
+
+<ul>
+<li>boot</li>
+<li>reload</li>
+<li>shutdown</li>
+<li>get_disks</li>
+<li>delete_disks</li>
+<li>delete_non_swap_disks</li>
+<li>delete_configs</li>
+<li>used_disk_space</li>
+<li>create_disk_from_stackscript</li>
+<li>create_config</li>
+<li>wait_for_job</li>
+</ul>
+
+
+<p>Here is how we (re)provision a Linode instance:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">api</span> <span class="o">=</span> <span class="no">Linode</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:api_key</span> <span class="o">=&gt;</span> <span class="n">api_key</span><span class="p">,</span> <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">username</span><span class="p">,</span> <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">password</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LOG</span><span class="o">.</span><span class="n">info</span> <span class="s2">&quot;Looking for linode named &#39;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LINODE</span> <span class="o">=</span> <span class="no">Machine</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LOG</span><span class="o">.</span><span class="n">info</span> <span class="s2">&quot;Current linode status: &quot;</span> <span class="o">+</span> <span class="no">LINODE</span><span class="o">.</span><span class="n">linode</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">to_s</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="no">LINODE</span><span class="o">.</span><span class="n">linode</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="no">Linode</span><span class="o">::</span><span class="no">TERMINATED</span>
+</span><span class='line'>  <span class="no">LINODE</span><span class="o">.</span><span class="n">shutdown</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LOG</span><span class="o">.</span><span class="n">info</span> <span class="s2">&quot;Deleting non-swap disks&quot;</span>
+</span><span class='line'><span class="no">LINODE</span><span class="o">.</span><span class="n">delete_non_swap_disks</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LOG</span><span class="o">.</span><span class="n">info</span> <span class="s2">&quot;Deleting configs&quot;</span>
+</span><span class='line'><span class="no">LINODE</span><span class="o">.</span><span class="n">delete_configs</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">root_disk_id</span> <span class="o">=</span> <span class="no">LINODE</span><span class="o">.</span><span class="n">create_disk_from_stackscript</span><span class="p">({</span>
+</span><span class='line'>  <span class="ss">:size</span> <span class="o">=&gt;</span> <span class="no">LinodeUtils</span><span class="o">::</span><span class="no">MAXIMUM_DISK_SIZE</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:distro</span> <span class="o">=&gt;</span> <span class="no">DISTRO_LABEL</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:stackscriptid</span> <span class="o">=&gt;</span> <span class="no">STACK_SCRIPT_ID</span><span class="p">,</span>
+</span><span class='line'>  <span class="c1"># stack script options</span>
+</span><span class='line'>  <span class="ss">:root_pub_key</span> <span class="o">=&gt;</span> <span class="n">pub_key</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:fqdn</span> <span class="o">=&gt;</span> <span class="n">hostname</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">config_id</span> <span class="o">=</span> <span class="no">LINODE</span><span class="o">.</span><span class="n">create_config</span><span class="p">(</span><span class="no">KERNEL_LABEL</span><span class="p">,</span> <span class="n">root_disk_id</span><span class="p">)</span>
+</span><span class='line'><span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LOG</span><span class="o">.</span><span class="n">info</span> <span class="s2">&quot;Booting Linode...&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LINODE</span><span class="o">.</span><span class="n">boot</span><span class="p">(</span><span class="n">config_id</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>(this is the interesting bit; the full script is about twice as large but the rest is mostly setup and argument parsing)</p>
+
+<p>There is also a small DSL for constructing the Linode &#8220;config&#8221;. Here is an example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">config</span> <span class="o">=</span> <span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LinodeConfig</span><span class="o">.</span><span class="n">build</span> <span class="no">LinodeUtils</span><span class="o">.</span><span class="n">init_api</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">label</span> <span class="s2">&quot;My favorite config&quot;</span>
+</span><span class='line'>  <span class="n">kernel</span> <span class="sr">/Latest 2\.6 Paravirt(?!.*x86_64.*)/</span>
+</span><span class='line'>  <span class="n">comment</span> <span class="s2">&quot;first comment&quot;</span>
+</span><span class='line'>  <span class="n">disk</span> <span class="mi">0</span><span class="p">,</span> <span class="ss">:root_device</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">comment</span> <span class="s2">&quot;second comment&quot;</span>
+</span><span class='line'>  <span class="n">disk</span> <span class="mi">1</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After implementing this automation for Linode, I think we could probably easily move to another service. The basic steps are the same:</p></p>
+
+<ol>
+<li>provision an instance - this requires selecting or building an OS image, and ensuring a root SSH key is installed</li>
+<li>install a first-boot script to perform config/bootstrapping (how this is implemented differs to some degree from service to service)</li>
+<li>ssh as root to execute any commands required to finish bootstrapping (if you have a configuration server that is known to the bootstrapped node then this step can be eliminated)</li>
+</ol>
+
+
+<p>On that note, stay tuned for future posts on bootstrapping a node with Puppet+Git, how to use Hudson and a &#8220;stable branch&#8221; Git methodology for continuous integration with Rails, and our foray into CouchDB-based desktop apps.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Incandescent Team</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-04T16:48:00-05:00" pubdate data-updated="true">Jan 4<span>th</span>, 2011</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://incandescent.github.com/blog/2011/01/04/using-the-linode-api-for-provisioning/" data-via="" data-counturl="http://incandescent.github.com/blog/2011/01/04/using-the-linode-api-for-provisioning/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2010/12/04/whizpage-closed-beta-launched/" title="Previous Post: Whizpage - closed beta launched!">&laquo; Whizpage - closed beta launched!</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/02/10/jquery-mobile-with-backbone-dot-js-and-phonegap/" title="next Post: jQuery Mobile with Backbone.js and PhoneGap">jQuery Mobile with Backbone.js and PhoneGap &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2011/06/08/23-spring-application-customization-patterns/">Spring Application Customization Patterns</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/26/some-news/">Some News</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/02/10/jquery-mobile-with-backbone-dot-js-and-phonegap/">jQuery Mobile with Backbone.js and PhoneGap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/01/04/using-the-linode-api-for-provisioning/">Using the Linode API for provisioning</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/12/04/whizpage-closed-beta-launched/">Whizpage - closed beta launched!</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Incandescent Team -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

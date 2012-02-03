@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>jQuery Mobile with Backbone.js and PhoneGap - Incandescent Software</title>
+  <meta name="author" content="Incandescent Team">
+
+  
+  <meta name="description" content="We&#8217;ve received a few requests about mobile app development in the past few weeks. We were looking for different options and wanted to use &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://incandescent.github.com/blog/2011/02/10/jquery-mobile-with-backbone-dot-js-and-phonegap">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Incandescent Software" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Incandescent Software</a></h1>
+  
+    <h2>tales of web &amp; veterinary software development</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:incandescent.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">jQuery Mobile With Backbone.js and PhoneGap</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-10T13:38:00-05:00" pubdate data-updated="true">Feb 10<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>We&#8217;ve received a few requests about mobile app development in the past few weeks. We were looking for different options and wanted to use something which could be written once and used on different devices including iOS and Android. We found two solutions: one called <a href="http://www.appcelerator.com/products/titanium-mobile-application-development/">Titanium Mobile</a> and another one called <a href="http://www.phonegap.com">PhoneGap</a>. If you are wondering what the differences between them are, you can read more <a href="http://stackoverflow.com/questions/1482586/comparison-between-corona-phonegap-titanium">here</a>.</p>
+
+<p>We decided to stick with PhoneGap for now mostly because it looked simpler to start with. PhoneGap provides a set of project templates and a common JavaScript API for building &#8220;native&#8221; mobile applications. It supports iOS, Android, Blackberry, Symbian, and Palm. The JavaScript API allows for interaction with the native API&#8217;s for things like contact management, camera, GPS and other.</p>
+
+<p>In our previous projects we used a lot of JavaScript. Our code was structured around a great tool called <a href="http://documentcloud.github.com/backbone/">Backbone.js</a>. We also used a lot of jQuery. We wanted to bring this experience to our mobile solution and decided to give jQuery Mobile a try. As a proof of concept we created a simple project called <strong>Happy Pointer</strong>.</p>
+
+<p><img src="http://incandescent.github.com/happypointer/images/menu.png" /></p>
+
+<p>The app makes use of the data coming from awesome <a href="http://simplegeo.com">SimpleGeo</a> and it&#8217;s integrated with Google Maps. It basically searches for things near you. (it searches for coffee places by default).</p>
+
+<p><img src="http://incandescent.github.com/happypointer/images/navigation.png" /></p>
+
+<p>You can find the code for the app on github here: https://github.com/incandescent/happypointer or check the <a href="http://incandescent.github.com/happypointer">demo</a>. jQuery Mobile is very easy to learn. You don&#8217;t have to write any JavaScript to start with something simple. It comes with numerous useful widgets and components. In order to use them you have to add a &#8220;data-role&#8221; to your html elements. For example if you want to render a button you can do:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;index.html&quot;</span> <span class="na">data-role=</span><span class="s">&quot;button&quot;</span><span class="nt">&gt;</span>Link button<span class="nt">&lt;/a&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>or lets say you want a list:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul</span> <span class="na">data-role=</span><span class="s">&quot;listview&quot;</span><span class="nt">&gt;&lt;/ul&gt;&lt;/pre&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Overall we think PhoneGap and jQuery Mobile are great solutions for people who already have experience with web technologies and don&#8217;t want to fight with Android or Cocoa Frameworks. We plan to write more about our experience with Backbone.js and more about our adventures with mobile development in the future so please stay tuned.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Incandescent Team</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-10T13:38:00-05:00" pubdate data-updated="true">Feb 10<span>th</span>, 2011</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://incandescent.github.com/blog/2011/02/10/jquery-mobile-with-backbone-dot-js-and-phonegap/" data-via="" data-counturl="http://incandescent.github.com/blog/2011/02/10/jquery-mobile-with-backbone-dot-js-and-phonegap/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/01/04/using-the-linode-api-for-provisioning/" title="Previous Post: Using the Linode API for provisioning">&laquo; Using the Linode API for provisioning</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/04/26/some-news/" title="next Post: Some News">Some News &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2011/06/08/23-spring-application-customization-patterns/">Spring Application Customization Patterns</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/26/some-news/">Some News</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/02/10/jquery-mobile-with-backbone-dot-js-and-phonegap/">jQuery Mobile with Backbone.js and PhoneGap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/01/04/using-the-linode-api-for-provisioning/">Using the Linode API for provisioning</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/12/04/whizpage-closed-beta-launched/">Whizpage - closed beta launched!</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Incandescent Team -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

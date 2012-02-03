@@ -9,7 +9,7 @@
   <meta name="author" content="Incandescent Team">
 
   
-  <meta name="description" content=" Blog Archives Recent Posts ">
+  <meta name="description" content="Having performed numerous customizations of third party or upstream/vendor applications based on the Spring framework, I&#8217;d like to share some &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,432 @@
       <div class="blog-index">
   
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/06/08/23-spring-application-customization-patterns/">Spring Application Customization Patterns</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-08T23:03:00-04:00" pubdate data-updated="true">Jun 8<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Having performed numerous customizations of third party or upstream/vendor applications based on the Spring framework, I&#8217;d like to share some patterns I&#8217;ve identified. These patterns form a hierarchy based on preferability - if it is not possible to implement one approach you may have to back off, and try the next best, repeating in stepwise fashion. I am going to list them from least preferable to most preferable in order to walk you through the rationale behind each approach.</p>
+
+
+<p>We will assume an application distributed in binary form, containing a Spring context with a service interface <strong>com.sample.ApplicationService</strong> and implementation <strong>com.sample.ApplicationServiceImpl</strong> defined as an <strong>&#8220;applicationService&#8221;</strong> bean which we want to override with some local customization.</p>
+
+
+<p><strong>Direct class override</strong></p>
+
+
+<p>The simplest and most direct approach is to simply create a new class named <strong>com.sample.ApplicationServiceImpl</strong> and arrange for it to appear in the classpath before the upstream implementation. If you have no other options (or are simply prototyping or debugging something) then this might work for you, but it cannot be considered much more than a hack.</p>
+
+
+<p>There are numerous problems with this approach. First, while it may initially be superficially possible to contrive a classloader chain which results in your implementation being picked up first, this is brittle and may lead to very confusing results when it breaks in the future. You will either be duplicating the service implementation by copying and pasting, or otherwise lying about the pedigree of this class. This will certainly make debugging harder, and will also convey an immediate maintenance overhead. Imagine upstream diverging from the base you forked - you will now have to continually reconcile any future changes to upstream (this may not phase users of decentralized version control systems but is certainly endless and error-prone tedium when working with central SCM like SVN). If you hoped to submit your customizations for inclusion upstream, then overriding the class directly may complicate acceptance. If behavior has changed, tests may fail. Or the change may be rejected because it is not suitable as a default for all users.</p>
+
+
+<p>A better approach would be to implement a separate class and submit this implementation as an <em>alternative</em> (with tests specific to this implementation of course).</p>
+
+
+<p><strong>Explicit context inclusion</strong></p>
+
+
+<p>In order to supply an alternate implementation, you will need to override the service bean defined in the application&#8217;s Spring context (let&#8217;s assume there <em>is</em> such a bean defined). Unless the application has provided some way for you to inject a context to override this bean you are still in the first situation: having to directly override a file (the Spring context this time) relying on classloader precedence. Let&#8217;s assume the application has implemented a specific provision for you to specify your own Spring context for inclusion. It may look like this:</p>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">String</span> <span class="n">customContext</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&quot;customContext&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">customContext</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClasspathApplicationContext</span><span class="o">(</span><span class="n">DEFAULT_CTX</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClasspathApplicationContext</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="n">DEFAULT_CONTEXT</span><span class="o">,</span> <span class="n">customContext</span> <span class="o">});</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p>In this situation you can construct a Spring context which redefines the application bean by name (&#8220;applicationService&#8221;) and supply the context via a system parameter:
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">-</span><span class="n">DcustomContext</span><span class="o">=</span><span class="n">MySpecialCustomization</span><span class="o">.</span><span class="na">xml</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>However this requires explicit, programmatic, support by the application.</p>
+<p><strong>Automatic context inclusion</strong></p>
+<p>A better approach for the application to implement is to take advantage of Spring&#8217;s resource syntax to import a <strong>wildcard</strong> resource expression. For example:</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;import</span> <span class="na">resource=</span><span class="s">&quot;classpath*:com/sample/*Customization.xml&quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>If placed in the application&#8217;s context, this expression will cause the import of any contexts matching the glob <strong>&#8220;com/sample/*Customization.xml&#8221;</strong> in any classloader without any <em>additional coordination between application and implementer.</em></p>
+<p>The <strong>&#8220;classpath*:&#8221; </strong>syntax tells Spring to look in <em>all classloaders</em>. See Spring&#8217;s documentation for a better understanding of classpath resource expressions:</p>
+
+<a href="http://static.springsource.org/spring/docs/2.5.x/reference/resources.html#resources-app-ctx-wildcards-in-resource-paths">http://static.springsource.org/spring/docs/2.5.x/reference/resources.html#resources-app-ctx-wildcards-in-resource-paths</a>
+
+<p>If using Maven, for example, simply adding an additional dependency containing the customization (e.g. &#8220;com/sample/MySpecialCustomization.xml&#8221;) to your project is sufficient to implement the override.</p>
+<p>One theoretical downside is that it may be expensive for Spring to iterate through classloaders looking for matching contexts. This is complete speculation on my part, and given the maintenance burden and complexity of the other solutions, it is probably worth a (startup) performance penalty.</p>
+<p><strong>Missing bean definition</strong></p>
+<p>The above approaches will not work (directly) if you encounter the following situation: You wish to override a class which is not defined as a bean. It is likely this class itself is used (eventually) by a service, which means you need to walk the caller hierarchy to find affected services, and then resume with the above approaches <em>on those services</em>. You will need to override the services, providing implementations (ideally shallow subclasses) which override <em>the minimal number of methods</em>necessary to replace invocations of the old class with your new class.</p>
+<p>For bonus points, make the aforementioned class <em>injectable</em>as a Spring bean, and submit this enhancement upstream. This will allow you to migrate your customization to a simple bean and throw away your unnecessary wrapper classes/beans.</p>
+<p><strong>AOP magic</strong></p>
+<p>With the approaches discussed so far, you ultimately still have to replace an entire service. If the application has been modularized sufficiently then this may not be a concern. However, it may be the case that replacing an entire service is heavy-handed, or that the functionality you need implemented is not necessarily best done by replacing a service implementation.</p>
+<p>In these situations there is another trick up our sleeve. We can wrap the <strong><em>existing</em></strong> implementation bean with a Spring AOP (Aspect Oriented Programming) aspect. For example we can surgically override a single method on a large interface. Or we can apply common logic to all methods (e.g. caching). We can secretly mutate method arguments and return values. In some situations this is much more convenient than overriding a service (imaging having to override a large service simply to change arguments and delegate to the wrapper service&#8230;).</p>
+<p>While this is the most loosely coupled approach, there are several downsides. First, AOP can be hard to understand and maintain. Secondly, AOP can complicate debugging as errors can now occur &#8220;between&#8221; known call frames, and behavior introduced dynamically via AOP will not be obvious to the external observer. Lastly, AOP can only be applied to services defined as beans.</p>
+<p>For details on Spring AOP see:</p>
+
+<a href="http://static.springsource.org/spring/docs/2.5.x/reference/aop.html">http://static.springsource.org/spring/docs/2.5.x/reference/aop.html</a>
+<p><strong>Conclusion</strong></p>
+<p>Well, despite the lack of code examples I hope that this post has been helpful. I may in the future construct a sample case that illustrates each of these approaches, and the amount of &#8220;maintenance&#8221; overhead they impose.</p>
+<p>To sum up, I&#8217;d like to conclude with:</p>
+<p>Direct class overriding: JUST DON&#8217;T DO IT</p>
+<p>Automatic context inclusion: PLEASE implement this provision if you are writing an application or service in Spring which you anticipate users having to customize</p>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/04/26/some-news/">Some News</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-26T23:52:00-04:00" pubdate data-updated="true">Apr 26<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>We have some exciting news! First, <a href="http://www.couchbase.com">Couchbase</a> the company behind <a href="http://couchdb.apache.org/">couchdb</a> published a <a href="http://www.couchbase.com/case-studies/incandescent">case study</a> about the <a href="http://menagerievet.com/">Menagerie Whiteboard</a> (Thank you Couchbase :)). Our solution is built entirely in JavaScript and HTML5 (the Couchbase guys are calling this approach <a href="http://couchapp.org/page/index">&#8216;couchapps&#8217;</a>) and it&#8217;s served directly from couchdb. It means there is no need for the traditional backend. Our JavaScript code is based on the wonderful <a href="http://documentcloud.github.com/backbone/">Backbone.js</a> library.</p>
+
+<p>The second piece of exciting news is that we just released a new version of the whiteboard which now works on iPad (check our demo <a href="http://whiteboard.couchone.com/whiteboard/_design/whiteboard/index.html">here</a>). We redesigned the UI and changed few things around to support the iPad platform.</p>
+
+<p><img src="http://media.tumblr.com/tumblr_lkosj4D0nL1qz7rfi.png" /></p>
+
+<p>We plan to write more about our experience and technical challenges we encountered on the way so please stay tuned.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/02/10/jquery-mobile-with-backbone-dot-js-and-phonegap/">jQuery Mobile With Backbone.js and PhoneGap</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-10T13:38:00-05:00" pubdate data-updated="true">Feb 10<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>We&#8217;ve received a few requests about mobile app development in the past few weeks. We were looking for different options and wanted to use something which could be written once and used on different devices including iOS and Android. We found two solutions: one called <a href="http://www.appcelerator.com/products/titanium-mobile-application-development/">Titanium Mobile</a> and another one called <a href="http://www.phonegap.com">PhoneGap</a>. If you are wondering what the differences between them are, you can read more <a href="http://stackoverflow.com/questions/1482586/comparison-between-corona-phonegap-titanium">here</a>.</p>
+
+<p>We decided to stick with PhoneGap for now mostly because it looked simpler to start with. PhoneGap provides a set of project templates and a common JavaScript API for building &#8220;native&#8221; mobile applications. It supports iOS, Android, Blackberry, Symbian, and Palm. The JavaScript API allows for interaction with the native API&#8217;s for things like contact management, camera, GPS and other.</p>
+
+<p>In our previous projects we used a lot of JavaScript. Our code was structured around a great tool called <a href="http://documentcloud.github.com/backbone/">Backbone.js</a>. We also used a lot of jQuery. We wanted to bring this experience to our mobile solution and decided to give jQuery Mobile a try. As a proof of concept we created a simple project called <strong>Happy Pointer</strong>.</p>
+
+<p><img src="http://incandescent.github.com/happypointer/images/menu.png" /></p>
+
+<p>The app makes use of the data coming from awesome <a href="http://simplegeo.com">SimpleGeo</a> and it&#8217;s integrated with Google Maps. It basically searches for things near you. (it searches for coffee places by default).</p>
+
+<p><img src="http://incandescent.github.com/happypointer/images/navigation.png" /></p>
+
+<p>You can find the code for the app on github here: https://github.com/incandescent/happypointer or check the <a href="http://incandescent.github.com/happypointer">demo</a>. jQuery Mobile is very easy to learn. You don&#8217;t have to write any JavaScript to start with something simple. It comes with numerous useful widgets and components. In order to use them you have to add a &#8220;data-role&#8221; to your html elements. For example if you want to render a button you can do:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;index.html&quot;</span> <span class="na">data-role=</span><span class="s">&quot;button&quot;</span><span class="nt">&gt;</span>Link button<span class="nt">&lt;/a&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>or lets say you want a list:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul</span> <span class="na">data-role=</span><span class="s">&quot;listview&quot;</span><span class="nt">&gt;&lt;/ul&gt;&lt;/pre&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Overall we think PhoneGap and jQuery Mobile are great solutions for people who already have experience with web technologies and don&#8217;t want to fight with Android or Cocoa Frameworks. We plan to write more about our experience with Backbone.js and more about our adventures with mobile development in the future so please stay tuned.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/01/04/using-the-linode-api-for-provisioning/">Using the Linode API for Provisioning</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-04T16:48:00-05:00" pubdate data-updated="true">Jan 4<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://www.linode.com" title="Linode.com" target="_blank">Linode</a> is a great VPS/Cloud provider and we use it to run a development/testing machine and a production MongoDB server. It also has an easy to use REST <a href="http://www.linode.com/api/" title="Linode API" target="_blank">API</a> which, unlike Amazon EC2, requires only an access key and no complicated X509 configuration. There is a nice Ruby library for this API on github: <a href="https://github.com/rick/linode">https://github.com/rick/linode</a></p>
+
+<p>We use Puppet to manage node configuration once a node is provisioned (and this is cloud-provider agnostic), however provisioning the node requires use of the particular cloud provider&#8217;s API and this is where the library above comes in. There are libraries like <a href="http://incubator.apache.org/libcloud/" title="libcloud" target="_blank">libcloud</a> that provide an abstraction layer that works with many cloud providers - using the Linode API directly made the most sense for us.</p>
+
+<p>The Ruby Linode library above exposes the Linode API directly, and it is fairly low level (no model of the node, config, etc.). Since (re)provisioning requires successive interactions with the same Linode instance, as well as a notion of a static configuration which can be applied to the node, it&#8217;s nice to have a higher level model of the virtual machine. We created a small library which wraps the Linode API and adds a couple of abstractions. You can find it here on GitHub:</p>
+
+<p><a href="https://github.com/incandescent/linode-utils">https://github.com/incandescent/linode-utils</a></p>
+
+<p>This linode-utils gem provides a simple model of a Linode Machine, as well as a small Linode configuration DSL.</p>
+
+<p>Machine operations:</p>
+
+<ul>
+<li>boot</li>
+<li>reload</li>
+<li>shutdown</li>
+<li>get_disks</li>
+<li>delete_disks</li>
+<li>delete_non_swap_disks</li>
+<li>delete_configs</li>
+<li>used_disk_space</li>
+<li>create_disk_from_stackscript</li>
+<li>create_config</li>
+<li>wait_for_job</li>
+</ul>
+
+
+<p>Here is how we (re)provision a Linode instance:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">api</span> <span class="o">=</span> <span class="no">Linode</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:api_key</span> <span class="o">=&gt;</span> <span class="n">api_key</span><span class="p">,</span> <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">username</span><span class="p">,</span> <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">password</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LOG</span><span class="o">.</span><span class="n">info</span> <span class="s2">&quot;Looking for linode named &#39;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LINODE</span> <span class="o">=</span> <span class="no">Machine</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LOG</span><span class="o">.</span><span class="n">info</span> <span class="s2">&quot;Current linode status: &quot;</span> <span class="o">+</span> <span class="no">LINODE</span><span class="o">.</span><span class="n">linode</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">to_s</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="no">LINODE</span><span class="o">.</span><span class="n">linode</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="no">Linode</span><span class="o">::</span><span class="no">TERMINATED</span>
+</span><span class='line'>  <span class="no">LINODE</span><span class="o">.</span><span class="n">shutdown</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LOG</span><span class="o">.</span><span class="n">info</span> <span class="s2">&quot;Deleting non-swap disks&quot;</span>
+</span><span class='line'><span class="no">LINODE</span><span class="o">.</span><span class="n">delete_non_swap_disks</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LOG</span><span class="o">.</span><span class="n">info</span> <span class="s2">&quot;Deleting configs&quot;</span>
+</span><span class='line'><span class="no">LINODE</span><span class="o">.</span><span class="n">delete_configs</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">root_disk_id</span> <span class="o">=</span> <span class="no">LINODE</span><span class="o">.</span><span class="n">create_disk_from_stackscript</span><span class="p">({</span>
+</span><span class='line'>  <span class="ss">:size</span> <span class="o">=&gt;</span> <span class="no">LinodeUtils</span><span class="o">::</span><span class="no">MAXIMUM_DISK_SIZE</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:distro</span> <span class="o">=&gt;</span> <span class="no">DISTRO_LABEL</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:stackscriptid</span> <span class="o">=&gt;</span> <span class="no">STACK_SCRIPT_ID</span><span class="p">,</span>
+</span><span class='line'>  <span class="c1"># stack script options</span>
+</span><span class='line'>  <span class="ss">:root_pub_key</span> <span class="o">=&gt;</span> <span class="n">pub_key</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:fqdn</span> <span class="o">=&gt;</span> <span class="n">hostname</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">config_id</span> <span class="o">=</span> <span class="no">LINODE</span><span class="o">.</span><span class="n">create_config</span><span class="p">(</span><span class="no">KERNEL_LABEL</span><span class="p">,</span> <span class="n">root_disk_id</span><span class="p">)</span>
+</span><span class='line'><span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LOG</span><span class="o">.</span><span class="n">info</span> <span class="s2">&quot;Booting Linode...&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">LINODE</span><span class="o">.</span><span class="n">boot</span><span class="p">(</span><span class="n">config_id</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>(this is the interesting bit; the full script is about twice as large but the rest is mostly setup and argument parsing)</p>
+
+<p>There is also a small DSL for constructing the Linode &#8220;config&#8221;. Here is an example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">config</span> <span class="o">=</span> <span class="no">LinodeUtils</span><span class="o">::</span><span class="no">LinodeConfig</span><span class="o">.</span><span class="n">build</span> <span class="no">LinodeUtils</span><span class="o">.</span><span class="n">init_api</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">label</span> <span class="s2">&quot;My favorite config&quot;</span>
+</span><span class='line'>  <span class="n">kernel</span> <span class="sr">/Latest 2\.6 Paravirt(?!.*x86_64.*)/</span>
+</span><span class='line'>  <span class="n">comment</span> <span class="s2">&quot;first comment&quot;</span>
+</span><span class='line'>  <span class="n">disk</span> <span class="mi">0</span><span class="p">,</span> <span class="ss">:root_device</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">comment</span> <span class="s2">&quot;second comment&quot;</span>
+</span><span class='line'>  <span class="n">disk</span> <span class="mi">1</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After implementing this automation for Linode, I think we could probably easily move to another service. The basic steps are the same:</p></p>
+
+<ol>
+<li>provision an instance - this requires selecting or building an OS image, and ensuring a root SSH key is installed</li>
+<li>install a first-boot script to perform config/bootstrapping (how this is implemented differs to some degree from service to service)</li>
+<li>ssh as root to execute any commands required to finish bootstrapping (if you have a configuration server that is known to the bootstrapped node then this step can be eliminated)</li>
+</ol>
+
+
+<p>On that note, stay tuned for future posts on bootstrapping a node with Puppet+Git, how to use Hudson and a &#8220;stable branch&#8221; Git methodology for continuous integration with Rails, and our foray into CouchDB-based desktop apps.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/04/whizpage-closed-beta-launched/">Whizpage - Closed Beta Launched!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-04T13:05:00-05:00" pubdate data-updated="true">Dec 4<span>th</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Small businesses have it tough. They do not have the advantages of economies of scale that larger companies do, but are at the same time more reliant on word of mouth and personal networking to market their business. When it comes to a web presence, small business owners are often stuck in the realm between purchasing a pricey custom-built web site, or going it alone with a Do It Yourself tool and spending their time navigating the intricacies of web development and social media instead of running their business.</p>
+
+<p>We think small business owners could use a no-hassle service which allows them to easily create a web presence integrated with popular social media outlets out of the box.</p>
+
+<p>So with that said, we&#8217;ve launched the closed beta of our new product, <strong><a href="http://whizpage.biz" title="WhizPage - the simple way for small businesses to create a web presence">Whizpage</a></strong>!</p>
+
+<iframe frameborder="0" height="225" src="http://player.vimeo.com/video/16628599" width="400"></iframe>
+
+
+<p>If you are a small business owner, feel free to sign up and try it out. We are launching early and building features based on user feedback. We&#8217;d love to hear from you!</p>
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
     
     <a href="/blog/archives">Blog Archives</a>
@@ -76,6 +502,26 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2011/06/08/23-spring-application-customization-patterns/">Spring Application Customization Patterns</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/26/some-news/">Some News</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/02/10/jquery-mobile-with-backbone-dot-js-and-phonegap/">jQuery Mobile with Backbone.js and PhoneGap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/01/04/using-the-linode-api-for-provisioning/">Using the Linode API for provisioning</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/12/04/whizpage-closed-beta-launched/">Whizpage - closed beta launched!</a>
+      </li>
     
   </ul>
 </section>
