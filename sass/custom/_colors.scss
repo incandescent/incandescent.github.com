@@ -2,9 +2,11 @@
 // To give it a try, uncomment some of the lines below rebuild your blog, and see how it works.
 // If you need a handy color picker try http://hslpicker.com
 
-$page-bg: #FFEDD1;
-$header-bg: #EB8D00;
-$subtitle-color: lighten($header-bg, 38);
+//$page-bg: #FFEDD1;
+$page-bg: lighten(#EB8D00, 45);
+$header-bg: lighten(#EB8D00, 5);
+$title-color: #FFFFFF;
+$subtitle-color: lighten($header-bg, 40);
 
 //$header-bg: #263347;
 //$subtitle-color: lighten($header-bg, 58);

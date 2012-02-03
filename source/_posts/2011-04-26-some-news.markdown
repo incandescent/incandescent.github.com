@@ -1,0 +1,15 @@
+---
+layout: post
+title: "Some News"
+date: 2011-04-26 23:52
+comments: true
+categories: 
+---
+
+We have some exciting news! First, <a href="http://www.couchbase.com">Couchbase</a> the company behind <a href="http://couchdb.apache.org/">couchdb</a> published a <a href="http://www.couchbase.com/case-studies/incandescent">case study</a> about the <a href="http://menagerievet.com/">Menagerie Whiteboard</a> (Thank you Couchbase :)). Our solution is built entirely in JavaScript and HTML5 (the Couchbase guys are calling this approach <a href="http://couchapp.org/page/index">'couchapps'</a>) and it's served directly from couchdb. It means there is no need for the traditional backend. Our JavaScript code is based on the wonderful <a href="http://documentcloud.github.com/backbone/">Backbone.js</a> library.
+
+The second piece of exciting news is that we just released a new version of the whiteboard which now works on iPad (check our demo <a href="http://whiteboard.couchone.com/whiteboard/_design/whiteboard/index.html">here</a>). We redesigned the UI and changed few things around to support the iPad platform.
+
+<img src="http://media.tumblr.com/tumblr_lkosj4D0nL1qz7rfi.png" />
+
+We plan to write more about our experience and technical challenges we encountered on the way so please stay tuned.
