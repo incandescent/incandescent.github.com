@@ -4,7 +4,7 @@
   <title><![CDATA[Incandescent Software]]></title>
   <link href="http://incandescent.github.com/atom.xml" rel="self"/>
   <link href="http://incandescent.github.com/"/>
-  <updated>2012-02-03T01:24:56-05:00</updated>
+  <updated>2012-02-04T18:52:23-05:00</updated>
   <id>http://incandescent.github.com/</id>
   <author>
     <name><![CDATA[Incandescent Team]]></name>
@@ -14,10 +14,165 @@
 
   
   <entry>
+    <title type="html"><![CDATA[A comprehensive list of JavaScript resources]]></title>
+    <link href="http://incandescent.github.com/blog/2011/06/20/a-comprehensive-list-of-javascript-resources/"/>
+    <updated>2011-06-20T13:43:00-04:00</updated>
+    <id>http://incandescent.github.com/blog/2011/06/20/a-comprehensive-list-of-javascript-resources</id>
+    <content type="html"><![CDATA[<p>A few people have asked me lately about books and other resources related to JavaScript. I&#8217;ve decided to list them here for reference.&nbsp;</p>
+
+
+<h3><strong>JavaScript Books:</strong></h3>
+
+
+<p>There are many books about JavaScript. Some of them are better than others. Here is a list of books I read and recommend:</p>
+
+
+<ol>
+<li><a href="http://www.amazon.com/exec/obidos/ASIN/0596517742/wrrrldwideweb/">JavaScript: The Good Parts</a> by <strong>Douglas Crockford </strong>&nbsp;</li>
+<li><a href="http://www.amazon.com/Eloquent-JavaScript-Modern-Introduction-Programming/dp/1593272820 ">Eloquent JavaScript: A Modern Introduction to Programming</a> by&nbsp;<strong>Marijn Haverbeke&nbsp;</strong></li>
+<li><a href="http://www.amazon.com/JavaScript-Patterns-Stoyan-Stefanov/dp/0596806752/">JavaScript patterns</a> by&nbsp;<strong>Stoyan Stefanov<br /></strong></li>
+<li><a href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/">Essential JS Design Patterns</a>&nbsp;by&nbsp;<strong>Addy Osmani&nbsp;<br />&nbsp;</strong></li>
+</ol>
+
+
+<h3><strong>Blogs about JavaScript:</strong></h3>
+
+
+<ol>
+<li><a href="http://javascript.crockford.com">http://javascript.crockford.com</a>&nbsp; by&nbsp;<strong>Douglas Crockford</strong> (a lot of interesting topics)</li>
+<li><a href="http://dmitrysoshnikov.com/">http://dmitrysoshnikov.com/</a>&nbsp;by&nbsp;<strong>Dmitry Soshnikov</strong> (fantastic overview of&nbsp;ECMA-262 implementation and more)</li>
+<li><a href="http://perfectionkills.com/">http://perfectionkills.com/</a>&nbsp;<strong>by kangax</strong> (exploring javascript by example)</li>
+<li><a href="http://javascriptweblog.wordpress.com/">http://javascriptweblog.wordpress.com/</a>&nbsp;by&nbsp;<strong>Angus Croll </strong>(a lot of JS topics usually with great examples)</li>
+<li><a href="http://www.adequatelygood.com/">http://www.adequatelygood.com/</a>&nbsp;by&nbsp;<strong>Ben Cherry</strong></li>
+<li><a href="http://ejohn.org/category/blog/">http://ejohn.org/category/blog/</a>&nbsp;by&nbsp;<strong>John Resig</strong></li>
+<li><a href="http://mir.aculo.us/">http://mir.aculo.us/</a>&nbsp;by&nbsp;<strong>Thomas Fuchs<br /><br /><br /></strong></li>
+</ol>
+
+
+<h3><strong>Websites about JavaScript:</strong></h3>
+
+
+<ol>
+<li><strong>JavaScript Garden</strong>: <a href="http://bonsaiden.github.com/JavaScript-Garden">http://bonsaiden.github.com/JavaScript-Garden</a>&nbsp;(this is a good resource but please also see the feedback about it <a href="https://github.com/BonsaiDen/JavaScript-Garden/issues/84">here</a>)</li>
+<li><strong>DailyJS</strong>&nbsp;<a href="http://dailyjs.com/">http://dailyjs.com</a>&nbsp;(every day you can see what&#8217;s new in JavaScript world)</li>
+<li><strong>JavaScript Weekly</strong>&nbsp;<a href="http://javascriptweekly.com/">http://javascriptweekly.com</a></li>
+<li><strong>Annotated ECMAScript 5.1</strong> <a href="http://es5.github.com/">http://es5.github.com</a></li>
+<li><strong>Badass JavaScript</strong>&nbsp;<a href="http://badassjs.com">http://badassjs.com</a></li>
+</ol>
+
+
+<p><strong>&nbsp;</strong></p>
+
+
+<h3><strong>Mailing Lists:</strong></h3>
+
+
+<ol>
+<li><strong><span><strong>JSMentors</strong>:&nbsp;<a href="http://jsmentors.com/">http://jsmentors.com</a>&nbsp;</span></strong>(discussion of JavaScript, mentoring, code reviews)</li>
+</ol>
+
+
+<h3><strong><br /><br />Client-Side JavaScript Frameworks and Tools:</strong></h3>
+
+
+<p>Frameworks come into many flavors (monolithic, hybrid, micro)&nbsp;and different people advocate for different approaches. You can read more on the topic here: <a href="http://mir.aculo.us/2011/04/11/i-for-one-welcome-our-new-micro-framework-overlords/">http://mir.aculo.us/2011/04/11/i-for-one-welcome-our-new-micro-framework-overlords/</a>&nbsp;and here:&nbsp;<a href="http://tomdale.net/2011/04/imagine-a-beowulf-cluster-of-javascript-frameworks/">http://tomdale.net/2011/04/imagine-a-beowulf-cluster-of-javascript-frameworks/</a> and choose your side or just use the best tool for the job :).</p>
+
+
+<ol>
+<li><strong>Backone.js</strong>&nbsp;<a href="http://documentcloud.github.com/backbone/">http://documentcloud.github.com/backbone/</a>&nbsp;(model centric, evented based)</li>
+<li><strong>Spine</strong>&nbsp;<a href="http://maccman.github.com/spine">http://maccman.github.com/spine</a></li>
+<li><strong>MicroJS</strong>&nbsp;<a href="http://microjs.com">http://microjs.com</a>&nbsp;(collection of small tools and libraries)</li>
+<li><strong>Sproutcore</strong>&nbsp;<a href="http://www.sproutcore.com">http://www.sproutcore.com</a> (version 2.0 is more a hybrid approach)</li>
+<li><strong>EmberJS</strong>&nbsp;<a href="http://emberjs.com/">http://emberjs.com</a></li>
+<li><strong>ZeptoJS</strong>&nbsp;<a href="http://zeptojs.com">http://zeptojs.com</a> (micro framework which follows jQuery API and targets mobile webkit)</li>
+<li><strong>KnockoutJS</strong> &nbsp;<a href="http://knockoutjs.com">http://knockoutjs.com</a>&nbsp;(Model - View - View Model approach)</li>
+<li><strong>Angular</strong> <a href="http://angularjs.org">http://angularjs.org</a>&nbsp;(another hybrid with some interesting patterns behind it)</li>
+</ol>
+
+
+<h3><strong>Online JavaScript Tools:</strong></h3>
+
+
+<ol>
+<li><strong>JSFiddle</strong> <a href="http://jsfiddle.net">http://jsfiddle.net</a> (a playground for web developers)</li>
+<li><strong>JSLint</strong>&nbsp;<a href="http://www.jslint.com">http://www.jslint.com</a>&nbsp;(The JavaScript Code Quality Tool)</li>
+<li><strong>JSHint</strong> <a href="http://jshint.org">http://jshint.org</a>&nbsp;</li>
+<li><strong>JSONLint</strong>&nbsp;<a href="http://jsonlint.com">http://jsonlint.com</a>&nbsp;(JSON validator)</li>
+<li><strong>jsPerf</strong>&nbsp;<a href="http://jsperf.com">http://jsperf.com</a> (JavaScript performance playground)</li>
+</ol>
+
+
+<p>So there you have it. I&#8217;ve been collecting these materials for a while now. This list is not set in stone and I&#8217;m curious if you found some other resources worth mentioning. I&#8217;m collecting a similar list related to Node.js and CoffeeScript which I may share in the future.</p>
+
+
+<p>- michal</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Fork/Join]]></title>
+    <link href="http://incandescent.github.com/blog/2011/06/12/fork-slash-join/"/>
+    <updated>2011-06-12T19:56:00-04:00</updated>
+    <id>http://incandescent.github.com/blog/2011/06/12/fork-slash-join</id>
+    <content type="html"><![CDATA[<p>As our computing environment and needs change, certain programming styles and patterns which are less effective recede and others which are more applicable rise in popularity.  As these previously implicit patterns are identified and discussed they are ascribed proper names.</p>
+
+<p>&#8220;Fork/Join&#8221; is one of these patterns which is gaining prominence.  It refers to both a simple and ubiquitous concept (intuitive enough that you probably hadn&#8217;t thought to name it) and a very specific and narrow implementation of that concept.</p>
+
+<p>Small-f &#8220;fork/join&#8221; is a general approach to parallelizing a decomposable task.  The main task is decomposed into many sub-tasks that can be run independently, these tasks are then run in parallel on multiple threads (forks), and the main task waits (joins) for their completion before proceeding.  This can be easily implemented with existing concurrency frameworks such as Java&#8217;s Executors facility:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">Callable</span><span class="o">&lt;</span><span class="n">Output</span><span class="o">&gt;&gt;</span> <span class="n">callables</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Callable</span><span class="o">&lt;</span><span class="n">Output</span><span class="o">&gt;&gt;(</span><span class="n">inputs</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="n">Input</span> <span class="nl">i:</span> <span class="n">inputs</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">callables</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Callable</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">Output</span> <span class="nf">call</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="c1">// do some work here</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">output</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>  <span class="o">});</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// following call performs the fork and join</span>
+</span><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Output</span><span class="o">&gt;&gt;</span> <span class="n">futures</span>
+</span><span class='line'>  <span class="o">=</span> <span class="n">EXECUTOR_SERVICE</span><span class="o">.</span><span class="na">invokeAll</span><span class="o">(</span><span class="n">callables</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On the other hand, Fork/Join also refers to a specific application of the &#8220;fork/join&#8221; pattern which has been proposed by Doug Lea for inclusion in Java 7: <a href="http://gee.cs.oswego.edu/dl/papers/fj.pdf">http://gee.cs.oswego.edu/dl/papers/fj.pdf</a></p>
+
+<p>Going back to our previous fork/join example, note that in a generic implementation tasks will be run on independent threads which will typically block on a single task queue.  When the number of threads scales up, and the size of tasks scales down, lock contention on this queue becomes problematic.</p>
+
+<p>The Fork/Join implementation that Doug Lea proposes is aimed at a very specific (I would say narrow), but possibly very common case: parallel algorithms which do not block.  When a purely cpu-bound algorithm is parallelized, there will be high contention on any shared queue.  The Fork/Join implementation deals with this by using an alternate queuing arrangement call &#8220;work stealing&#8221;.  Instead of all threads pulling from a shared (and contended) queue, each thread has its own dedicated (mostly uncontended) task queue (a deque).  Only when a given thread runs out of tasks will contention occur - it will attempt to &#8220;steal&#8221; a task of the end of another thread&#8217;s queue.</p>
+
+<p>The hierarchical (and possibly cyclical) decomposition of tasks, and execution of tasks via a &#8220;work stealing&#8221; arrangement is what is referred to by &#8220;Fork/Join&#8221; proper.</p>
+
+<p>There is at least one critique of Fork/Join&#8217;s inclusion in Java 7 which seems well reasoned to me: <a href="http://www.coopsoft.com/ar/CalamityArticle.html">http://www.coopsoft.com/ar/CalamityArticle.html</a>. I for one remain skeptical that this implementation will produce significantly better results than the simpler &#8220;fork/join&#8221; pattern with a standard thread pool and shared queue, to outweigh the cost in implementation and conceptual complexity.  However Doug contributed the Executors framework to start with, so he certainly knows his concurrency.</p>
+
+<p>If you&#8217;re like me then hopefully the above explanation has cleared up the term &#8220;Fork/Join&#8221; and distinguished the-pattern-i-was-using-all-along from the very specific framework/library proposal for Java 7.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Spring Application Customization Patterns]]></title>
-    <link href="http://incandescent.github.com/blog/2011/06/08/23-spring-application-customization-patterns/"/>
+    <link href="http://incandescent.github.com/blog/2011/06/08/spring-application-customization-patterns/"/>
     <updated>2011-06-08T23:03:00-04:00</updated>
-    <id>http://incandescent.github.com/blog/2011/06/08/23-spring-application-customization-patterns</id>
+    <id>http://incandescent.github.com/blog/2011/06/08/spring-application-customization-patterns</id>
     <content type="html"><![CDATA[<p>Having performed numerous customizations of third party or upstream/vendor applications based on the Spring framework, I&#8217;d like to share some patterns I&#8217;ve identified. These patterns form a hierarchy based on preferability - if it is not possible to implement one approach you may have to back off, and try the next best, repeating in stepwise fashion. I am going to list them from least preferable to most preferable in order to walk you through the rationale behind each approach.</p>
 
 
