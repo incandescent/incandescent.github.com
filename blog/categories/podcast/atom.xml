@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: podcast | Incandescent Software]]></title>
+  <link href="http://incandescent.github.com/blog/categories/podcast/atom.xml" rel="self"/>
+  <link href="http://incandescent.github.com/"/>
+  <updated>2012-02-04T22:38:01-05:00</updated>
+  <id>http://incandescent.github.com/</id>
+  <author>
+    <name><![CDATA[Incandescent Team]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[IthacaTech Podcast Episode 1 Interview with Casey Dreier]]></title>
+    <link href="http://incandescent.github.com/blog/2011/07/18/ithacatech-podcast-episode-1-interview-with-casey-dreier/"/>
+    <updated>2011-07-18T23:57:00-04:00</updated>
+    <id>http://incandescent.github.com/blog/2011/07/18/ithacatech-podcast-episode-1-interview-with-casey-dreier</id>
+    <content type="html"><![CDATA[<p><strong>IthacaTech Podcast - Episode 1 Interview with Casey Dreier</strong></p>
+
+
+<p><a href="http://podcast.incandescentsoftware.com/s0/E1-Interview_with_Casey_Dreier.mp3" title="Episode 1 - Interview with Casey Dreier" target="_blank">Direct link</a></p>
+
+
+<p>Episode 1 is out! &nbsp;In this episode we interview&nbsp;Rails developer&nbsp;Casey Dreier. &nbsp;Casey is a lead Ruby on Rails developer and evangelist at SingleBrook Technology, Inc. in Ithaca, NY.</p>
+
+
+<p>We discuss Ruby, Rails, Casey's recent Rails bug fixes, the James Webb Space Telescope, and our thoughts on fostering the Ithaca developer community.</p>
+
+
+<p>We've upgraded to some new-fangled audio equipment, so look forward to improved audio quality (and maybe production skills to match in the future).</p>
+
+
+<p>Please send feedback, suggestions, and angry screeds to&nbsp;<a href="mailto:podcast@incandescentsoftware.com" target="_blank">podcast@incandescentsoftware.com</a>.</p>
+
+
+<p>- Aaron</p>
+
+
+<p>Links:</p>
+
+
+<ul>
+<li><a href="http://rubyrogues.com/" title="Ruby Rogues podcast" target="_blank">Ruby Rogues podcast</a></li>
+<li><a href="http://www.robertsosinski.com/2008/12/21/understanding-ruby-blocks-procs-and-lambdas/" title="Ruby blocks, procs and lambdas" target="_blank">Ruby blocks, procs, and lambdas</a></li>
+<li><a href="http://blogs.discovermagazine.com/badastronomy/2011/07/07/congress-puts-nasa-and-jwst-on-the-chopping-block/" title="James Webb Space Telescope funding in the air" target="_blank">James Webb Space Telescope funding in the air</a></li>
+<li><a href="http://groups.google.com/group/ithaca-web-people" target="_blank">"Ithaca Web People"</a>&nbsp;Google group. &nbsp;If you are in Ithaca and you do (web) development, and you are a person, sign up and check out our meetups and hackfests!</li>
+</ul>
+
+
+<p>Our new audio setup, thanks to <a href="http://castroller.com/Podcasts/LinuxOutlaws/2247549-Linux%20Outlaws%20200%20-%20Winning!%20Podcast%20Production%20Special" target="_blank">Linux Outlaws for details on their production process</a>&nbsp;</p>
+
+
+<ul>
+<li><a href="http://www.behringer.com/EN/Products/B-1.aspx" target="_blank">Behringer B1</a> condenser mic</li>
+<li><a href="http://www.behringer.com/EN/Products/MIC100.aspx" target="_blank">Behringer MIC100</a> mic pre-amp</li>
+<li><a href="http://www.behringer.com/EN/Products/UCA202.aspx" target="_blank">Behringer UCA202</a> audio interface</li>
+<li>MacBook built in microphone uber alles</li>
+</ul>
+
+
+<p>And thanks to people giving us weird looks as we blithely tested our equipment. &lt;3</p>
+
+
+<p>Podcast info</p>
+
+
+<ul>
+<li>Theme song by&nbsp;<a href="http://www.bradsucks.net/" target="_blank">Brad Sucks</a>,&nbsp;<em>Flouride (demo)</em>.</li>
+<li>RSS feed:&nbsp;<a href="http://feeds.feedburner.com/incandescentsoftware/IthacaTechPodcast">http://feeds.feedburner.com/incandescentsoftware/IthacaTechPodcast</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing the IthacaTech Podcast]]></title>
+    <link href="http://incandescent.github.com/blog/2011/06/21/introducing-the-ithacatech-podcast/"/>
+    <updated>2011-06-21T15:28:00-04:00</updated>
+    <id>http://incandescent.github.com/blog/2011/06/21/introducing-the-ithacatech-podcast</id>
+    <content type="html"><![CDATA[<p><strong>Introducing the IthacaTech Podcast!</strong></p>
+
+
+<p><a href="http://podcast.incandescentsoftware.com/s0/E0-The_Rough_In.mp3" title="Episode 0 - The Rough In" target="_blank">Direct link</a> (see below for show notes)</p>
+
+
+<p>This is something we've wanted to do for a while - start an <strong><em>Ithaca-based</em> tech podcast</strong>. &nbsp;Michal and I are always coming across exciting new projects and technologies and we'd like to create a venue for sharing those discoveries and discussions with others, and, conversely, learning from others in the area.</p>
+
+
+<p>We are aiming for a local focus - we want to highlight local business, events, music, etc. &nbsp;To that end we are looking for:</p>
+
+
+<ul>
+<li><strong>web and other software developers in the area that want to talk about what they are working on</strong></li>
+<li><strong>local music we can showcase or use as bumpers</strong></li>
+<li><strong>topic and segment ideas, send them in!</strong></li>
+<li><strong>feedback and corrections</strong></li>
+</ul>
+
+
+<p>If you have suggestions for podcast topics or would like to get involved with the podcast, let us know at <a href="mailto:podcast@incandescentsoftware.com" target="_blank">podcast@incandescentsoftware.com</a> (or just email us directly :).</p>
+
+
+<p><em>Note: in the spirit of DIY, we are learning as we go. :) This first episode is pretty rough since we wanted to get our first show out there ASAP, so please excuse the audio quality!</em></p>
+
+
+<p>- Aaron</p>
+
+
+<p><strong>Episode 0 - "The Rough In" Thurs. 6/16/11 Show notes</strong></p>
+
+
+<p>Today Michal discusses JavaScript frameworks and Aaron explains the Fork/Join pattern.</p>
+
+
+<p>JavaScript frameworks discussed:</p>
+
+
+<ul>
+<li><a href="http://microjs.com/">http://microjs.com/</a></li>
+<li><a href="http://documentcloud.github.com/backbone/">http://documentcloud.github.com/backbone/</a></li>
+<li><a href="http://angularjs.org/">http://angularjs.org/</a></li>
+<li><a href="http://knockoutjs.com/">http://knockoutjs.com/</a></li>
+<li><a href="http://www.sproutcore.com/">http://www.sproutcore.com/</a></li>
+<li><a href="http://awardwinningfjords.com/2011/05/09/javascript-microframeworks-and-the-future.html">http://awardwinningfjords.com/2011/05/09/javascript-microframeworks-and-the-future.html</a></li>
+</ul>
+
+
+<p>Fork/Join links</p>
+
+
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Fork-join_queue">http://en.wikipedia.org/wiki/Fork-join_queue</a></li>
+<li><a href="http://gee.cs.oswego.edu/dl/papers/fj.pdf">http://gee.cs.oswego.edu/dl/papers/fj.pdf</a></li>
+<li><a href="http://download.oracle.com/javase/tutorial/essential/concurrency/forkjoin.html">http://download.oracle.com/javase/tutorial/essential/concurrency/forkjoin.html</a></li>
+<li><a href="http://www.coopsoft.com/ar/CalamityArticle.html">http://www.coopsoft.com/ar/CalamityArticle.html</a></li>
+</ul>
+
+
+<p>Local links</p>
+
+
+<ul>
+<li><a href="http://www.topographymarketing.com/">http://www.topographymarketing.com/</a>&nbsp;(thanks for letting us use your space guys!)</li>
+</ul>
+
+
+<p>Podcast info</p>
+
+
+<ul>
+<li>Theme song by <a href="http://www.bradsucks.net/" target="_blank">Brad Sucks</a>, <em>Flouride (demo)</em>.</li>
+<li>RSS feed:&nbsp;<a href="http://feeds.feedburner.com/incandescentsoftware/IthacaTechPodcast">http://feeds.feedburner.com/incandescentsoftware/IthacaTechPodcast</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

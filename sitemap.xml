@@ -37,11 +37,27 @@
         <lastmod>2012-02-04T18:52:10-05:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://incandescent.github.com/blog/2011/06/21/introducing-the-ithacatech-podcast/
+        </loc>
+        <lastmod>2012-02-04T22:27:36-05:00</lastmod>
+    </url>
+    <url>
+        <loc>http://incandescent.github.com/blog/2011/07/03/extending-jasmine-matchers/</loc>
+        <lastmod>2012-02-04T22:35:44-05:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://incandescent.github.com/blog/2011/07/18/ithacatech-podcast-episode-1-interview-with-casey-dreier/
+        </loc>
+        <lastmod>2012-02-04T22:38:01-05:00</lastmod>
+    </url>
+    <url>
         <loc>http://incandescent.github.com/blog/archives/</loc>
-        <lastmod>2012-02-04T18:52:10-05:00</lastmod>
+        <lastmod>2012-02-04T22:38:01-05:00</lastmod>
     </url>
     <url>
         <loc>http://incandescent.github.com/</loc>
-        <lastmod>2012-02-04T18:52:10-05:00</lastmod>
+        <lastmod>2012-02-04T22:38:01-05:00</lastmod>
     </url>
 </urlset>
